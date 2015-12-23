@@ -1,0 +1,38 @@
+<resources>
+    <string name="vocablia_api_url">https://api.vocablia.cl</string>
+    <string name="vocablia_api_url_dev">http://75c314a1.ngrok.io</string>
+    <string name="app_name">Vocablia</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="site">www.vocablia.cl</string>
+    <string name="site_description">¡Visita nuestro sitio y contáctanos!</string>
+    <string name="host">http://www.vocablia.cl</string>
+    <string name="sender_id">829350922522</string>
+    <string name="share">Compartir</string>
+    <string name="thanks_for_share">Gracias por Compartir</string>
+    <string name="play">Escuchar</string>
+    <string name="play_problem">Imposible obtener la pronunciacion para esta palabra. Verifique su conexión a internet o intente mas tarde.</string>
+    <string name="no_word">Imposible obtener la palabra para este día. Verifique su conexión a internet o intente mas tarde.</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="notifications_description">Habilitar Notificaciones</string>
+    <string name="set">Aceptar</string>
+    <string name="cancel">Cancel</string>
+    <string name="hour">Hora</string>
+    <string name="share_this_word">Comparte esta palabra</string>
+    <string name="hour_description">Selecciona una hora para recibir su palabra diaria</string>
+    <string name="title_activity_word">WordActivity</string>
+</resources>
