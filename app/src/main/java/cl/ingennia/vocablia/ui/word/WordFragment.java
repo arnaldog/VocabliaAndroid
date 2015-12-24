@@ -13,18 +13,26 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cl.ingennia.vocablia.ApplicationModule;
 import cl.ingennia.vocablia.R;
 import cl.ingennia.vocablia.VocabliaApplication;
+import cl.ingennia.vocablia.ext.VocabliaString;
 import cl.ingennia.vocablia.model.word.Word;
 import cl.ingennia.vocablia.ui.MainModule;
 
@@ -57,12 +65,34 @@ public class WordFragment extends Fragment implements WordView {
     @Bind(R.id.image)
     ImageView image;
 
-    int dayOfYear;
+    static final int dayOfYear;
+
+    static {
+        DateTime dt = new DateTime();
+        dayOfYear = dt.getDayOfYear();
+    }
 
     @Inject
     WordPresenter wordPresenter;
 
+    @Inject
+    @Named("api_url")
+    String apiUrl;
+
     public WordFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        VocabliaApplication application = (VocabliaApplication) getActivity().getApplication();
+
+        DaggerWordComponent.builder()
+                .applicationModule(new ApplicationModule(application))
+                .wordModule(new WordModule())
+                .applicationComponent(application.getComponent())
+                .build().inject(this);
     }
 
     @Override
@@ -72,15 +102,11 @@ public class WordFragment extends Fragment implements WordView {
         View view = inflater.inflate(R.layout.fragment_word, container, false);
         ButterKnife.bind(this, view);
 
-        DaggerWordComponent.builder()
-                .mainModule(new MainModule())
-                .wordModule(new WordModule())
-                .applicationComponent( ((VocabliaApplication) getActivity().getApplication()).getComponent())
-                .build().inject(this);
 
         date.setText(getDayOfYearFormat());
         date.setShadowLayer(7, 0, 0, Color.BLACK);
 
+        wordPresenter.onTakeView(this);
         wordPresenter.fetchWord(dayOfYear);
 
         return view;
@@ -102,6 +128,8 @@ public class WordFragment extends Fragment implements WordView {
         int orientation = getResources().getConfiguration().orientation;
         image.setVisibility(View.VISIBLE);
 
+        Picasso.with(getContext()).load(String.format("%s%s", apiUrl, word.icon)).into(image);
+
 //        String uri = String.format("%s%s", host, word.icon);
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -120,7 +148,6 @@ public class WordFragment extends Fragment implements WordView {
     public void showProgress() {
         progressBar.setVisibility(View.VISIBLE);
         wordLayout.setVisibility(View.GONE);
-
     }
 
     public String getDayOfYearFormat() {
@@ -133,36 +160,14 @@ public class WordFragment extends Fragment implements WordView {
 
         String dateString = dateFormat.format(c.getTime());
 
-        return capitalizeAll(dateString);
-    }
-
-    public static String capitalizeAll(String string) {
-        String[] a = string.split(" ");
-
-        for (int i = 0; i < a.length; i++) {
-            a[i] = StringUtils.capitalize(a[i]);
-        }
-
-        return arrayToDelimitedString(a, " ");
+        return VocabliaString.capitalizeAll(dateString);
     }
 
 
-    public static String arrayToDelimitedString(String[] arr, String delim) {
 
-        if (arr == null || arr.length < 1) return "";
-        if (arr.length == 1) return arr[1];
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < arr.length; ++i) {
-            if (i > 0) {
-                sb.append(delim);
-            }
-
-            sb.append(arr[i]);
-        }
-
-        return sb.toString();
-
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        wordPresenter.onDetachView();
     }
 }

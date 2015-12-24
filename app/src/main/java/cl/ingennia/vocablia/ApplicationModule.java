@@ -14,6 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.JacksonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 
 /**
  * Created by Arnaldo Gaspar V. on 12/14/15.
@@ -41,6 +42,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     VocabliaApiV1 providesVocabliaApiV1(@Named("api_url") String  apiUrl) {
 
         OkHttpClient client = new OkHttpClient();
@@ -51,6 +53,7 @@ public class ApplicationModule {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(JacksonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(apiUrl)
                 .build();
 
@@ -61,7 +64,8 @@ public class ApplicationModule {
     @Singleton
     @Named("api_url")
     String providesVocabliaApiUrl(VocabliaApplication application) {
-        return application.getResources().getString(R.string.vocablia_api_url_dev);
+        int url = BuildConfig.DEBUG ? R.string.vocablia_api_url_dev : R.string.vocablia_api_url;
+        return application.getResources().getString(url);
     }
 
 }
