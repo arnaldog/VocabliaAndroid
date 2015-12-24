@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import cl.ingennia.vocablia.api.VocabliaApiV1;
 import cl.ingennia.vocablia.model.DefaultRepository;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Arnaldo Gaspar V. on 12/14/15.
@@ -23,7 +25,10 @@ public class WordRepository implements DefaultRepository<Word>{
 
     @Override
     public Observable<Word> get(int id) {
-        return apiV1.getWord(id);
+        return apiV1
+                .getWord(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -33,16 +38,16 @@ public class WordRepository implements DefaultRepository<Word>{
 
     @Override
     public Observable delete() {
-        return null;
+        return Observable.empty();
     }
 
     @Override
     public Observable update() {
-        return null;
+        return Observable.empty();
     }
 
     @Override
     public Observable<Word> create(Word object) {
-        return null;
+        return Observable.empty();
     }
 }
