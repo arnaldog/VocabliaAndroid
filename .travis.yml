@@ -5,6 +5,10 @@ android:
     - android-23
     - extra
     - sys-img-armeabi-v7a-android-21
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
 jdk:
   - oraclejdk8
 
@@ -28,3 +32,7 @@ sudo: required
 script:
   - android list target
   - ./gradlew connectedAndroidTest
+  - ./gradlew build
+
+
+after_success: ./scripts/travis_upload_release_to_github.py
