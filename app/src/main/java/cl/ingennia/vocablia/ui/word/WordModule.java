@@ -13,7 +13,7 @@ import dagger.Provides;
  * arnaldog@gmail.com
  */
 @Module
-public class WordModule {
+ public class WordModule {
 
     @Provides
     @Singleton
@@ -26,4 +26,6 @@ public class WordModule {
     WordRepository providesWordRepository(VocabliaApiV1 apiV1){
         return new WordRepository(apiV1);
     }
+
+        
 }

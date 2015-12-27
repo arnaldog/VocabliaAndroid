@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import cl.ingennia.vocablia.model.word.Word;
 import cl.ingennia.vocablia.model.word.WordRepository;
 import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Arnaldo Gaspar V. on 12/13/15.
@@ -13,8 +15,8 @@ import rx.Observer;
 public class WordPresenterImpl implements WordPresenter, Observer<Word> {
 
     WordRepository repo;
-
     WordView listener;
+    Subscription subscription;
 
     @Inject
     public WordPresenterImpl(WordRepository repo){
@@ -23,7 +25,7 @@ public class WordPresenterImpl implements WordPresenter, Observer<Word> {
 
     @Override
     public void fetchWord(int dayOfYear) {
-        repo.get(dayOfYear).subscribe(this);
+        subscription = repo.get(dayOfYear).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
         listener.showProgress();
     }
 
@@ -49,6 +51,7 @@ public class WordPresenterImpl implements WordPresenter, Observer<Word> {
 
     @Override
     public void onDetachView() {
-        this.listener = null;
+        subscription.unsubscribe();
+        listener = null;
     }
 }

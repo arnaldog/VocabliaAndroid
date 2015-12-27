@@ -17,7 +17,6 @@ import java.util.Date;
 @DatabaseTable
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Word implements Serializable {
-	private static final long serialVersionUID = 1L;
 
 	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
 	public int id;
